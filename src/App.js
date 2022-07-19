@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
-
 import './App.css';
 import Message from "./components/Message";
+
 
 const socket = io("ws://localhost:6969", {
   withCredentials: true,
@@ -13,32 +13,105 @@ const socket = io("ws://localhost:6969", {
 });
 
 function App() {
+  let id;
+  let lastUpdateDate = new Date();
+  //let [lastUpdateDate, setLastUpdateDate] = useState(new Date());
+  //const [id, setId] = useState("");
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
 
+  const formRef = useRef(null);
+  const inputRef = useRef(null);
+  const msgEndRef = useRef(null);
+  const messagesRef = useRef(null);
+
+  function sendMessage(e) {
+    const content = inputRef.current.value;
+    inputRef.current.value = "";
+    e.preventDefault();
+
+    if (content === "") {
+      return;
+    }
+
+      socket.emit("message", {
+        content: content,
+        id: id
+      });
+  }
+
+  function scrollMessagesToBottom(e) {
+    const el = messagesRef.current;
+    if (el.scrollHeight - el.scrollTop - el.clientHeight <= 96) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }
+
+  function forceScrollMessagesToBottom(e) {
+    const el = messagesRef.current;
+    //el.scrollTop = el.scrollHeight;
+    el.scroll({ top: el.scrollHeight, behavior: "smooth"})
+  }
+
+
   useEffect(() => {
-    socket.on('connection', () => {
-      console.log('connected');
+    const input = inputRef.current;
+    input.addEventListener("keydown", e => {
+      if (e.keyCode === 13) {
+        sendMessage(e);
+      }
+    });
+
+    socket.on('connection', (data) => {
+      /* 
+      data = {
+        name,
+        who,
+        socketId,
+        color,
+        joinMessage,
+        timestamp,
+      }
+      */
+      // TODO: snackbar success disconnected
       setIsConnected(true);
+
+      //const content = "xd";
+
+      //const messageData = {
+      //  name: data.name,
+      //  color: data.color,
+      //  timestamp: timestamp,
+      //  content:
+      //}
+
     });
 
     socket.on('disconnect', () => {
-      console.log('disconnected');
+      // TODO: snackbar error disconnected
       setIsConnected(false);
     });
+
+    socket.on("id", (_id) => {
+      id = _id;
+      console.log(id);
+    })
 
     socket.on('message', (data) => {
       setMessages(arr => [...arr, data]);
     });
-  });
+  }, []);
+
+  useEffect(() => {
+    scrollMessagesToBottom(messagesRef);
+  }, [messages]);
 
   return (
     <div className='App'>
       <div className='main-container'>
         <div className="row">
           <div className="col">
-            <div className='messages'>
-              <>
+            <div ref={messagesRef} className='messages'>
               {messages.map((data, i) => (
                   <Message 
                   key={i} 
@@ -48,7 +121,11 @@ function App() {
                   content={data.content}
                   />
               ))}
-              </>
+              <div 
+                style={{ float:"left", clear: "both" }}
+                ref={msgEndRef}>
+              </div>
+
             </div>
           </div>
           <div className="col">
@@ -60,7 +137,9 @@ function App() {
         <div className="row">
           <div className="col">
             <div className="input">
-              <textarea id="messageInput" class="messageInput" rows="4" placeholder="Enter Your Message"></textarea>
+              <form id="form" ref={formRef}>
+                <textarea ref={inputRef} id="messageInput" className="messageInput" autoFocus placeholder="Enter Your Message"></textarea>
+              </form>
             </div>
           </div>
           <div className="col">
@@ -70,6 +149,7 @@ function App() {
           </div>
         </div>
 
+        <button className="button-scroll-down" onClick={forceScrollMessagesToBottom}></button>
       </div>
     </div>
   );
