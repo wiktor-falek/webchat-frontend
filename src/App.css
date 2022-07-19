@@ -1,38 +1,108 @@
-.App {
-  text-align: center;
+:root {
+  --message-bg-color-primary: rgb(121, 61, 110);
+  --message-bg-color-secondary: rgb(117, 58, 106);
+  --message-bg-color-hover: rgb(100, 56, 91);
+  
+  font-size: 18px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.main-container {
+  background-color: #552c4d;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.col {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-basis: 100%;
+  flex: 1;
 }
 
-.App-link {
-  color: #61dafb;
+.messages {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #fa0;
+  border-radius: 1px;
+  overflow: auto;
+  box-sizing: border-box;
+  height: 80vh;
+  width: 85vw;
+
+  background-color: var(--message-bg-color-primary);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.messages > :nth-child(odd){
+  background-color: var(--message-bg-color-secondary);
 }
+
+.messages :hover {
+  background-color: var(--message-bg-color-hover);
+;}
+
+
+.input {
+  border: 1px solid #fa0;
+  border-radius: 1px;
+
+  box-sizing: border-box;
+  width: 85vw;
+  height: 20vh;
+}
+
+.messageInput {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  resize: none;
+  font-size: 1rem;
+  background-color: inherit;
+}
+
+.users {
+  border: 1px solid #fa0;
+  border-radius: 1px;
+  overflow: scroll;
+
+  box-sizing: border-box;
+  height: 80vh;
+}
+
+.settings {
+  border: 1px solid #fa0;
+  border-radius: 1px;
+
+  box-sizing: border-box;
+  height: 20vh;
+}
+
+@media screen and (max-width: 1000px) {
+  /* hide users and settings*/
+  .users {
+    display: none;
+  }
+  .settings {
+    display: none;
+  }
+  /* set messages and input to full width */
+  .messages {
+    width: 100vw;
+  }
+  .input {
+    width: 100vw;
+  }
+
+}
+ 
+
+
+
