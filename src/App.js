@@ -7,13 +7,14 @@ import Message from "./components/Message";
 
 const socket = io("ws://localhost:6969", {
   withCredentials: true,
-  extraHeaders: {
-    "my-custom-header": "abcd"
-  }
+  //extraHeaders: {
+  //  "my-custom-header": ""
+  //}
 });
 
 function App() {
   const [messages, setMessages] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
 
   const formRef = useRef(null);
@@ -72,27 +73,7 @@ function App() {
     el.scroll({ top: el.scrollHeight, behavior: "smooth"})
   }
 
-
   useEffect(() => {
-    const input = inputRef.current;
-
-    let keysPressed = {};
-    input.addEventListener("keydown", e => {
-      keysPressed[e.key] = true;
-      if (keysPressed.Shift && keysPressed.Enter) {
-        //e.preventDefault();
-        //input.value += "\n";
-        keysPressed = {};
-      }
-      if (keysPressed.Enter) {
-        sendMessage(e);
-        keysPressed = {};
-      }
-
-      //console.log(keysPressed);
-      
-    });
-
     socket.on('connection', (data) => {
       // TODO: snackbar success connected
       setIsConnected(true);
@@ -101,6 +82,14 @@ function App() {
     socket.on('disconnect', () => {
       // TODO: snackbar error disconnected
       setIsConnected(false);
+    });
+
+    socket.on("id", (_id) => {
+      sessionStorage.setItem("id", _id);
+    });
+
+    socket.on('message', (data) => {
+      setMessages(arr => [...arr, data]);
     });
 
     socket.on('userJoin', (data) => {
@@ -116,14 +105,29 @@ function App() {
       }
 
       setMessages(arr => [...arr, messageData]);
-      })
+    });
 
-    socket.on("id", (_id) => {
-      sessionStorage.setItem("id", _id);
-    })
+    socket.on('onlineUsers', (onlineUsers) => {
+      console.log(onlineUsers);
+      setOnlineUsers(onlineUsers);
+    });
+    
+  }, []);
 
-    socket.on('message', (data) => {
-      setMessages(arr => [...arr, data]);
+  useEffect(() => {
+    let keysPressed = {};
+    inputRef.current.addEventListener("keydown", e => {
+      keysPressed[e.key] = true;
+      if (keysPressed.Shift && keysPressed.Enter) {
+        //e.preventDefault();
+        //input.value += "\n";
+        keysPressed = {};
+      }
+      if (keysPressed.Enter) {
+        sendMessage(e);
+        keysPressed = {};
+      }
+      //console.log(keysPressed);
     });
   }, []);
 
@@ -150,7 +154,10 @@ function App() {
           </div>
           <div className="col">
             <div className="users">
-              Users
+              <p className="online">Online: {onlineUsers.length}</p>
+              {onlineUsers.map((user, i) => (
+                <p className="user" key={i} socketid={user.socketId} name={user.name}>{user.name}</p>
+              ))}
             </div>
           </div>
         </div>
