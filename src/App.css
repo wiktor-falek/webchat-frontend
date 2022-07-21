@@ -6,12 +6,17 @@
   
   color: var(--font-color);
   font-size: 18px;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-textarea, textarea :focus {
+textarea {
+  color: var(--font-color);
+  --padding-top-bottom: 0.5rem;
+  padding: var(--padding-top-bottom) 1rem;
+  line-height: calc(calc(15vh - var(--padding-top-bottom)) / 5);
   border: none;
   outline: none;
-  color: var(--font-color);
+  text-decoration: none !important;
 }
 
 .main-container {
@@ -42,13 +47,15 @@ textarea, textarea :focus {
   border-radius: 1px;
   overflow: auto;
   box-sizing: border-box;
-  height: 80vh;
+  height: 85vh;
   width: 85vw;
   background-color: var(--message-bg-color-primary);
 }
 
 .messages p{
   margin-left: 1.1rem;
+  margin-right: 1.1rem;
+
 }
 
 .messages > :nth-child(odd){
@@ -65,7 +72,7 @@ textarea, textarea :focus {
 
   box-sizing: border-box;
   width: 85vw;
-  height: 20vh;
+  height: 15vh;
 }
 
 .messageInput {
@@ -84,7 +91,7 @@ textarea, textarea :focus {
   overflow: scroll;
 
   box-sizing: border-box;
-  height: 80vh;
+  height: 85vh;
 }
 
 .settings {
@@ -143,13 +150,19 @@ textarea, textarea :focus {
   }
 }
 
-@media (min-width: 768px) {
-  .button-63 {
-    font-size: 24px;
-    min-width: 196px;
-  }
+.message {
+  height: 96px;
+  max-height: fit-content;
+}
+/* 
+.message__name {
+}
+ */
+.message__timestamp {
+  color: grey;
 }
 
-.message p {
-  padding: 0;
+.message__content {
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }

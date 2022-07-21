@@ -22,16 +22,40 @@ function App() {
 
   const formRef = useRef(null);
   const inputRef = useRef(null);
-  const msgEndRef = useRef(null);
   const messagesRef = useRef(null);
 
   function sendMessage(e) {
-    const content = inputRef.current.value;
+    const content = inputRef.current.value.trim();
     inputRef.current.value = "";
     e.preventDefault();
 
     if (content === "") {
       return;
+    }
+  
+    if (content[0] === "/") { // is a command
+      let command;
+      const indexOfSpace = content.slice(1).indexOf(" ");
+      if (indexOfSpace === -1) {
+        command = content.slice(1);
+      }
+      else {
+        command = content.slice(1, indexOfSpace);
+      }
+
+      let shouldReturn = true;
+      console.log(command);
+      switch (command) {
+        case "clear":
+        case "cls":
+          setMessages([]);
+          break;
+        default:
+          shouldReturn = false; 
+      }
+      if (shouldReturn) {
+        return // prevent emitting message
+      }
     }
 
       socket.emit("message", {
@@ -56,11 +80,23 @@ function App() {
 
   useEffect(() => {
     const input = inputRef.current;
+
+    let keysPressed = {};
     input.addEventListener("keydown", e => {
-      if (e.keyCode === 13) {
-        sendMessage(e);
+      keysPressed[e.key] = true;
+      if (keysPressed.Shift && keysPressed.Enter) {
+        //e.preventDefault();
+        //input.value += "\n";
+        keysPressed = {};
       }
-    });
+      if (keysPressed.Enter) {
+        sendMessage(e);
+        keysPressed = {};
+      }
+
+      //console.log(keysPressed);
+      
+    }, false);
 
     socket.on('connection', (data) => {
       /* 
@@ -75,8 +111,6 @@ function App() {
       */
       // TODO: snackbar success disconnected
       setIsConnected(true);
-
-      //const content = "xd";
 
       //const messageData = {
       //  name: data.name,
@@ -94,7 +128,6 @@ function App() {
 
     socket.on("id", (_id) => {
       id = _id;
-      console.log(id);
     })
 
     socket.on('message', (data) => {
@@ -121,11 +154,6 @@ function App() {
                   content={data.content}
                   />
               ))}
-              <div 
-                style={{ float:"left", clear: "both" }}
-                ref={msgEndRef}>
-              </div>
-
             </div>
           </div>
           <div className="col">
@@ -138,7 +166,7 @@ function App() {
           <div className="col">
             <div className="input">
               <form id="form" ref={formRef}>
-                <textarea ref={inputRef} id="messageInput" className="messageInput" autoFocus placeholder="Enter Your Message"></textarea>
+                <textarea ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message"></textarea>
               </form>
             </div>
           </div>
