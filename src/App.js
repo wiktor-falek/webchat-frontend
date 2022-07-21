@@ -23,6 +23,13 @@ function App() {
   const inputRef = useRef(null);
   const messagesRef = useRef(null);
 
+  function changeName(name) {
+    socket.emit("nameChange", {
+      name: name,
+      id: id
+    })
+  }
+
   function sendMessage(e) {
     const content = inputRef.current.value.trim();
     inputRef.current.value = "";
@@ -35,6 +42,7 @@ function App() {
     if (content[0] === "/") { // is a command
       let command;
       const indexOfSpace = content.slice(1).indexOf(" ");
+      const args = content.slice(indexOfSpace + 1).split(" ");
       if (indexOfSpace === -1) {
         command = content.slice(1);
       }
@@ -48,6 +56,8 @@ function App() {
         case "cls":
           setMessages([]);
           break;
+        case "nick":
+          changeName(args[0]);
         default:
           shouldReturn = false; 
       }
@@ -55,7 +65,6 @@ function App() {
         return // prevent emitting message
       }
     }
-    console.log("bruh " + id)
       socket.emit("message", {
         content: content,
         id: id
@@ -107,6 +116,10 @@ function App() {
         timestamp: data.timestamp,
         content: content,
       }
+
+    socket.on('nameChange', (newName) => {
+      setName(newName);
+    })
 
       setMessages(arr => [...arr, messageData]);
     });
