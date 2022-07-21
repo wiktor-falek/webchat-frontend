@@ -13,6 +13,8 @@ const socket = io("ws://localhost:6969", {
 });
 
 function App() {
+  let id;
+  const [name, setName] = useState("Anonymous");
   const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -53,12 +55,13 @@ function App() {
         return // prevent emitting message
       }
     }
-
+    console.log("bruh " + id)
       socket.emit("message", {
         content: content,
-        id: sessionStorage.getItem("id")
+        id: id
       });
   }
+  
 
   function scrollMessagesToBottom(e) {
     const el = messagesRef.current;
@@ -85,7 +88,8 @@ function App() {
     });
 
     socket.on("id", (_id) => {
-      sessionStorage.setItem("id", _id);
+        id = _id
+        console.log(`setting id to ${id}`);
     });
 
     socket.on('message', (data) => {
@@ -156,7 +160,7 @@ function App() {
             <div className="users">
               <p className="online">Online: {onlineUsers.length}</p>
               {onlineUsers.map((user, i) => (
-                <p className="user" key={i} socketid={user.socketId} name={user.name}>{user.name}</p>
+                <p className="user" key={i} socketid={user.socketid} name={user.name}>{user.name}</p>
               ))}
             </div>
           </div>
