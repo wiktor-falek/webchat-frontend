@@ -13,10 +13,6 @@ const socket = io("ws://localhost:6969", {
 });
 
 function App() {
-  let id;
-  let lastUpdateDate = new Date();
-  //let [lastUpdateDate, setLastUpdateDate] = useState(new Date());
-  //const [id, setId] = useState("");
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -44,7 +40,6 @@ function App() {
       }
 
       let shouldReturn = true;
-      console.log(command);
       switch (command) {
         case "clear":
         case "cls":
@@ -60,7 +55,7 @@ function App() {
 
       socket.emit("message", {
         content: content,
-        id: id
+        id: sessionStorage.getItem("id")
       });
   }
 
@@ -96,29 +91,11 @@ function App() {
 
       //console.log(keysPressed);
       
-    }, false);
+    });
 
     socket.on('connection', (data) => {
-      /* 
-      data = {
-        name,
-        who,
-        socketId,
-        color,
-        joinMessage,
-        timestamp,
-      }
-      */
-      // TODO: snackbar success disconnected
+      // TODO: snackbar success connected
       setIsConnected(true);
-
-      //const messageData = {
-      //  name: data.name,
-      //  color: data.color,
-      //  timestamp: timestamp,
-      //  content:
-      //}
-
     });
 
     socket.on('disconnect', () => {
@@ -126,8 +103,23 @@ function App() {
       setIsConnected(false);
     });
 
+    socket.on('userJoin', (data) => {
+      const [left, right] = data.joinMessage.split('{{name}}');
+      
+      const content = left + data.who + right;
+
+      const messageData = {
+        name: data.name,
+        color: data.color,
+        timestamp: data.timestamp,
+        content: content,
+      }
+
+      setMessages(arr => [...arr, messageData]);
+      })
+
     socket.on("id", (_id) => {
-      id = _id;
+      sessionStorage.setItem("id", _id);
     })
 
     socket.on('message', (data) => {

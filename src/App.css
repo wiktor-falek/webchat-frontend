@@ -58,7 +58,7 @@ textarea {
 
 }
 
-.messages > :nth-child(odd){
+.messages > :nth-child(2){
   background-color: var(--message-bg-color-secondary);
 }
 
@@ -99,7 +99,7 @@ textarea {
   border-radius: 1px;
 
   box-sizing: border-box;
-  height: 20vh;
+  height: 15vh;
 }
 
 @media screen and (max-width: 1000px) {
@@ -151,8 +151,14 @@ textarea {
 }
 
 .message {
-  height: 96px;
-  max-height: fit-content;
+  /* height: 96px; */
+  padding-bottom: 0.5rem;
+}
+
+.message p {
+  margin: 0;
+  margin-top: 0.25rem;
+  margin-left: 0.5rem;
 }
 /* 
 .message__name {
