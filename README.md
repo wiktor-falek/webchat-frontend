@@ -5,7 +5,8 @@ Frontend for `https://github.com/wiktor-falek/webchat` built in React
 - [x] Smart scrolling and scroll down button
 - [x] Client side commands such as /clear
 - [x] Random user join messages
-- [ ] List of online users
+- [x] List of online users
+- [ ] Select previous messages with up/down
 - [ ] Private messaging
 - [ ] File attachments?
 

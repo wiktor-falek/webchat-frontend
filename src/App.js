@@ -170,11 +170,14 @@ function App() {
             </div>
           </div>
           <div className="col">
-            <div className="users">
-              <p className="online">Online: {onlineUsers.length}</p>
-              {onlineUsers.map((user, i) => (
-                <p className="user" key={i} socketid={user.socketid} name={user.name}>{user.name}</p>
-              ))}
+            <div className="online">
+              <p className="online-counter">Online: {onlineUsers.length}</p>
+              <div className="users">
+                {onlineUsers.map((user, i) => (
+                  <p className="user" key={i} socketid={user.socketid} name={user.name}>{user.name}</p>
+                ))}
+              </div>
+
             </div>
           </div>
         </div>
@@ -182,13 +185,13 @@ function App() {
           <div className="col">
             <div className="input">
               <form id="form" ref={formRef}>
-                <textarea ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message"></textarea>
+                <textarea ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message&#10;/help to show commands"></textarea>
               </form>
             </div>
           </div>
           <div className="col">
-            <div className="settings">
-              Settings
+            <div className="profile">
+              Profile
             </div>
           </div>
         </div>
