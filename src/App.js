@@ -12,8 +12,9 @@ const socket = io("ws://localhost:6969", {
   //}
 });
 
+let id;
+
 function App() {
-  let id;
   const [name, setName] = useState("Anonymous");
   const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -38,6 +39,7 @@ function App() {
     if (content === "") {
       return;
     }
+    console.log(content)///
   
     if (content[0] === "/") { // is a command
       let command;
@@ -65,10 +67,11 @@ function App() {
         return // prevent emitting message
       }
     }
-      socket.emit("message", {
-        content: content,
-        id: id
-      });
+    console.log(content, id)
+    socket.emit("message", {
+      content: content,
+      id: id
+    });
   }
   
 
@@ -117,12 +120,12 @@ function App() {
         content: content,
       }
 
+      setMessages(arr => [...arr, messageData]);
+    });
+
     socket.on('nameChange', (newName) => {
       setName(newName);
     })
-
-      setMessages(arr => [...arr, messageData]);
-    });
 
     socket.on('onlineUsers', (onlineUsers) => {
       console.log(onlineUsers);
@@ -131,22 +134,15 @@ function App() {
     
   }, []);
 
-  useEffect(() => {
-    let keysPressed = {};
-    inputRef.current.addEventListener("keydown", e => {
-      keysPressed[e.key] = true;
-      if (keysPressed.Shift && keysPressed.Enter) {
-        //e.preventDefault();
-        //input.value += "\n";
-        keysPressed = {};
-      }
-      if (keysPressed.Enter) {
-        sendMessage(e);
-        keysPressed = {};
-      }
-      //console.log(keysPressed);
-    });
-  }, []);
+  function handleTextAreaKeyPresses(e) {
+    if (e.key === 'Enter' && e.shiftKey) {
+      return;
+    }        
+    if (e.key === 'Enter') {
+      sendMessage(e);
+      console.log(e);
+    } 
+  }
 
   useEffect(() => {
     scrollMessagesToBottom(messagesRef);
@@ -185,7 +181,7 @@ function App() {
           <div className="col">
             <div className="input">
               <form id="form" ref={formRef}>
-                <textarea ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message&#10;/help to show commands"></textarea>
+                <textarea onKeyDown={handleTextAreaKeyPresses} ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message&#10;/help to show commands"></textarea>
               </form>
             </div>
           </div>
