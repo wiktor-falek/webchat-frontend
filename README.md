@@ -11,9 +11,10 @@ Frontend for `https://github.com/wiktor-falek/webchat` built in React
 - [ ] File attachments?
 
 ## Tasks:
-- [ ] Choosing username
+- [x] Choosing username
+- [x] Fix Shift+Enter Shift not working properly
+- [ ] Scroll on message regardless of height
 - [ ] Choosing color
 - [ ] Updating username and color
-- [ ] Fix Shift+Enter Shift not working properly
 - [ ] Render scroll button when not scrolled down
 - [ ] Client side command suggestions
