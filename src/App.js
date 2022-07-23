@@ -6,7 +6,7 @@ import Message from "./components/Message";
 
 
 const socket = io("ws://localhost:6969", {
-  withCredentials: true,
+  withCredentials: false,
   //extraHeaders: {
   //  "my-custom-header": ""
   //}
@@ -39,7 +39,6 @@ function App() {
     if (content === "") {
       return;
     }
-    console.log(content)///
   
     if (content[0] === "/") { // is a command
       let command;
@@ -67,7 +66,6 @@ function App() {
         return // prevent emitting message
       }
     }
-    console.log(content, id)
     socket.emit("message", {
       content: content,
       id: id
@@ -75,9 +73,18 @@ function App() {
   }
   
 
-  function scrollMessagesToBottom(e) {
+  function scrollMessagesToBottom(e, scrollTopBefore) {
     const el = messagesRef.current;
-    if (el.scrollHeight - el.scrollTop - el.clientHeight <= 96) {
+    console.table({
+      "el.scrollHeight": el.scrollHeight,
+      "el.scrollTop": el.scrollTop,
+      "el.clientHeight": el.clientHeight,
+      "scrollPosition": el.scrollHeight - el.scrollTop - el.clientHeight,
+      "scrollTopBefore": scrollTopBefore
+    })
+
+    // window.innerHeight + window.scrollY >= document.body.offsetHeight)
+    if (el.scrollHeight - el.scrollTop - el.clientHeight <= 5) {
       el.scrollTop = el.scrollHeight;
     }
   }
@@ -101,7 +108,6 @@ function App() {
 
     socket.on("id", (_id) => {
         id = _id
-        console.log(`setting id to ${id}`);
     });
 
     socket.on('message', (data) => {
@@ -125,10 +131,10 @@ function App() {
 
     socket.on('nameChange', (newName) => {
       setName(newName);
+      console.log(newName);
     })
 
     socket.on('onlineUsers', (onlineUsers) => {
-      console.log(onlineUsers);
       setOnlineUsers(onlineUsers);
     });
     
@@ -140,12 +146,12 @@ function App() {
     }        
     if (e.key === 'Enter') {
       sendMessage(e);
-      console.log(e);
     } 
   }
 
   useEffect(() => {
-    scrollMessagesToBottom(messagesRef);
+    const scrollTopBefore = messagesRef.current.scrollTop;
+    scrollMessagesToBottom(messagesRef, scrollTopBefore);
   }, [messages]);
 
   return (
@@ -187,7 +193,7 @@ function App() {
           </div>
           <div className="col">
             <div className="profile">
-              Profile
+              <p>{name}</p>
             </div>
           </div>
         </div>

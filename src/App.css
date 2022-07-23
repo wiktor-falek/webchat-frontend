@@ -7,16 +7,21 @@
   color: var(--font-color);
   font-size: 18px;
   font-family: 'Courier New', Courier, monospace;
+  line-height: 1.5rem;
 }
 
 textarea {
   color: var(--font-color);
   --padding-top-bottom: 0.5rem;
   padding: var(--padding-top-bottom) 1rem;
-  line-height: calc(calc(15vh - var(--padding-top-bottom)) / 5);
   border: none;
   outline: none;
   text-decoration: none !important;
+  overflow: hidden;
+}
+
+textarea::-webkit-scrollbar {
+  display: none;
 }
 
 .main-container {
@@ -73,6 +78,7 @@ textarea {
   box-sizing: border-box;
   width: 85vw;
   height: 15vh;
+  padding-right: 3.1rem;
 }
 
 .messageInput {
@@ -130,7 +136,7 @@ textarea {
   height: var(--size);
   position: absolute;
   left: calc(85vw - var(--size) - var(--padding));
-  top: calc(80vh - var(--size) - var(--padding));
+  top: calc(85vh - var(--size) - var(--padding));
 
   background-color: #2e2c38;
   border: 0;
@@ -163,6 +169,7 @@ textarea {
   margin: 0;
   margin-top: 0.25rem;
   margin-left: 0.5rem;
+  margin-right: 4.6vw;
 }
 /* 
 .message__name {
@@ -182,9 +189,10 @@ textarea {
 }
 
 .user {
-  padding: 0.6rem 0 0.6rem 1rem;
+  padding: 0.7rem 0 0.6rem 1rem;
   border-top: 1px solid rgba(223, 220, 220, 0.185);
   margin: 0;
+  line-height: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
 }
