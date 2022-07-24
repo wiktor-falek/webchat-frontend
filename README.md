@@ -12,9 +12,15 @@ Frontend for `https://github.com/wiktor-falek/webchat` built in React
 ## Tasks:
 
 Private messaging
+
 Store username and color in localstorage and send to server on connection
+
 Scroll on message regardless of height
+
 Choosing color
+
 Updating username and color
+
 Render scroll button when not scrolled down
+
 Client side command suggestions
