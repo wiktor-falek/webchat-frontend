@@ -63,7 +63,7 @@ textarea::-webkit-scrollbar {
 
 }
 
-.messages > :nth-child(2){
+.messages > :nth-child(odd){
   background-color: var(--message-bg-color-secondary);
 }
 
