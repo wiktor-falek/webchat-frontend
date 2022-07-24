@@ -12,8 +12,12 @@ const socket = io("ws://localhost:6969", {
   //}
 });
 
-let id;
+// disable context menu on rightclick
+document.addEventListener("contextmenu", function (e){
+  e.preventDefault();
+}, false);
 
+let id;
 function App() {
   const [name, setName] = useState("Anonymous");
   const [messages, setMessages] = useState([]);
@@ -75,18 +79,18 @@ function App() {
 
   function scrollMessagesToBottom(e, scrollTopBefore) {
     const el = messagesRef.current;
-    console.table({
-      "el.scrollHeight": el.scrollHeight,
-      "el.scrollTop": el.scrollTop,
-      "el.clientHeight": el.clientHeight,
-      "scrollPosition": el.scrollHeight - el.scrollTop - el.clientHeight,
-      "scrollTopBefore": scrollTopBefore
-    })
+    //console.table({
+    //  "el.scrollHeight": el.scrollHeight,
+    //  "el.scrollTop": el.scrollTop,
+    //  "el.clientHeight": el.clientHeight,
+    //  "scrollPosition": el.scrollHeight - el.scrollTop - el.clientHeight,
+    //  "scrollTopBefore": scrollTopBefore
+    //})
 
     // window.innerHeight + window.scrollY >= document.body.offsetHeight)
-    if (el.scrollHeight - el.scrollTop - el.clientHeight <= 5) {
+    //if (el.scrollHeight - el.scrollTop - el.clientHeight <= 5) {
       el.scrollTop = el.scrollHeight;
-    }
+    // }
   }
 
   function forceScrollMessagesToBottom(e) {
@@ -136,6 +140,7 @@ function App() {
 
     socket.on('onlineUsers', (onlineUsers) => {
       setOnlineUsers(onlineUsers);
+      console.log(onlineUsers);
     });
     
   }, []);
@@ -167,6 +172,7 @@ function App() {
                   timestamp={new Date(data.timestamp).toLocaleTimeString()} 
                   color={data.color} 
                   content={data.content}
+                  socketid={data.socketId}
                   />
               ))}
             </div>
@@ -176,7 +182,7 @@ function App() {
               <p className="online-counter">Online: {onlineUsers.length}</p>
               <div className="users">
                 {onlineUsers.map((user, i) => (
-                  <p className="user" key={i} socketid={user.socketid} name={user.name}>{user.name}</p>
+                  <p className="user" key={i} socketid={user.socketId} name={user.name}>{user.name}</p>
                 ))}
               </div>
 
@@ -187,13 +193,13 @@ function App() {
           <div className="col">
             <div className="input">
               <form id="form" ref={formRef}>
-                <textarea onKeyDown={handleTextAreaKeyPresses} ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message&#10;/help to show commands"></textarea>
+                <textarea onKeyDown={handleTextAreaKeyPresses} ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message"></textarea>
               </form>
             </div>
           </div>
           <div className="col">
             <div className="profile">
-              <p>{name}</p>
+              <p className="profile__name">{name}</p>
             </div>
           </div>
         </div>
