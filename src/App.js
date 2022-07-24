@@ -19,7 +19,8 @@ document.addEventListener("contextmenu", function (e){
 
 let id;
 function App() {
-  const [name, setName] = useState("Anonymous");
+  const [name, setName] = useState("");
+  const [color, setColor] = useState("");
   const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -135,7 +136,10 @@ function App() {
 
     socket.on('nameChange', (newName) => {
       setName(newName);
-      console.log(newName);
+    })
+
+    socket.on('colorChange', (newColor) => {
+      setColor(newColor);
     })
 
     socket.on('onlineUsers', (onlineUsers) => {
@@ -182,7 +186,13 @@ function App() {
               <p className="online-counter">Online: {onlineUsers.length}</p>
               <div className="users">
                 {onlineUsers.map((user, i) => (
-                  <p className="user" key={i} socketid={user.socketId} name={user.name}>{user.name}</p>
+                  <p 
+                  key={i}
+                  style={{color: user.color}}
+                  className="user"
+                  socketid={user.socketId}
+                  name={user.name}>{user.name}
+                  </p>
                 ))}
               </div>
 
@@ -199,7 +209,7 @@ function App() {
           </div>
           <div className="col">
             <div className="profile">
-              <p className="profile__name">{name}</p>
+              <p style={{color: color}} className="profile__name">{name}</p>
             </div>
           </div>
         </div>
