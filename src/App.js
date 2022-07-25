@@ -29,93 +29,77 @@ function App() {
   const inputRef = useRef(null);
   const messagesRef = useRef(null);
 
-  function changeName(name) {
-    socket.emit("nameChange", {
-      name: name,
-      id: id
-    })
-  }
-
-  function sendPrivateMessage(e) {
-    const content = inputRef.current.value.trim();
-    inputRef.current.value = "";
-    e.preventDefault();
-
-    if (content === "") {
-      return;
-    }
-  
-    if (content[0] === "/") { // is a command
-      let command;
-      const indexOfSpace = content.slice(1).indexOf(" ");
-      const args = content.slice(indexOfSpace + 1).split(" ");
-      if (indexOfSpace === -1) {
-        command = content.slice(1);
-      }
-      else {
-        command = content.slice(1, indexOfSpace);
-      }
-
-      let shouldReturn = true;
-      switch (command) {
-        case "clear":
-        case "cls":
-          setMessages([]);
-          break;
-        case "nick":
-          changeName(args[0]);
-        default:
-          shouldReturn = false; 
-      }
-      if (shouldReturn) {
-        return // prevent emitting message
-      }
-    }
-    socket.emit("message", {
-      content: content,
-      id: id
-    });
-  }
 
   function sendMessage(e) {
     const content = inputRef.current.value.trim();
     inputRef.current.value = "";
     e.preventDefault();
-
+    
     if (content === "") {
       return;
     }
+
+    const indexOfSpace = content.slice(1).indexOf(" ");
+    const argsNotSplit = content.slice(indexOfSpace + 2);
+    const args = argsNotSplit.split(" ");
+
+    let command;
+    if (indexOfSpace === -1) {
+      command = content.slice(1);
+    }
+    else {
+      command = content.slice(1, indexOfSpace+1);
+    }
   
     if (content[0] === "/") { // is a command
-      let command;
-      const indexOfSpace = content.slice(1).indexOf(" ");
-      const args = content.slice(indexOfSpace + 1).split(" ");
-      if (indexOfSpace === -1) {
-        command = content.slice(1);
-      }
-      else {
-        command = content.slice(1, indexOfSpace);
-      }
-
-      let shouldReturn = true;
       switch (command) {
         case "clear":
         case "cls":
           setMessages([]);
-          break;
-        case "nick":
-          changeName(args[0]);
-        default:
-          shouldReturn = false; 
-      }
-      if (shouldReturn) {
-        return // prevent emitting message
+          return;
       }
     }
+    console.log(content);
+    console.log(content[21]);
+    if (
+        //if after @ there is 20 characters(socketId) 
+        content[0] === "@" &&
+        content.slice(1, 21).length === 20
+        //content[21] === " "
+        //content.slice(indexOfSpace + 2
+        ) {
+
+      console.table({
+        content: content,
+        argsNotSplit: argsNotSplit,
+        command: command
+      });
+
+      let message = "";
+      if (argsNotSplit !== command) {
+        message = argsNotSplit;
+      }
+
+      if (!message) {
+        return;
+      }
+
+      socket.emit("privateMessage", {
+        content: argsNotSplit,
+        targetId: command
+      })
+      return;
+    }
+
     socket.emit("message", {
       content: content,
       id: id
     });
+
+      //socket.emit("privateMessage", {
+      //  content: content,
+      //  id: id
+      //});
   }
   
 
@@ -228,11 +212,12 @@ function App() {
                   style={{color: user.color}}
                   className="user"
                   socketid={user.socketId}
-                  name={user.name}>{user.name}
+                  name={user.name}
+                  >
+                  {user.name}
                   </p>
                 ))}
               </div>
-
             </div>
           </div>
         </div>
@@ -240,7 +225,16 @@ function App() {
           <div className="col">
             <div className="input">
               <form id="form" ref={formRef}>
-                <textarea onKeyDown={handleTextAreaKeyPresses} ref={inputRef} id="messageInput" rows="4" className="messageInput" autoFocus placeholder="Enter Your Message"></textarea>
+                <textarea 
+                onKeyDown={handleTextAreaKeyPresses}
+                ref={inputRef}
+                id="messageInput"
+                rows="4" 
+                className="messageInput" 
+                autoFocus 
+                placeholder="Enter Your Message" 
+                >
+                </textarea>
               </form>
             </div>
           </div>
