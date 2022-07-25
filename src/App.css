@@ -163,18 +163,20 @@ textarea::-webkit-scrollbar {
 .message {
   /* height: 96px; */
   padding-bottom: 0.5rem;
+  padding-left: 1rem;
 }
 
 .message p {
   margin: 0;
   margin-top: 0.25rem;
-  margin-left: 0.5rem;
   margin-right: 4.6vw;
 }
-/* 
+
+/*
 .message__name {
 }
- */
+*/
+
 .message__timestamp {
   color: grey;
 }

@@ -36,6 +36,47 @@ function App() {
     })
   }
 
+  function sendPrivateMessage(e) {
+    const content = inputRef.current.value.trim();
+    inputRef.current.value = "";
+    e.preventDefault();
+
+    if (content === "") {
+      return;
+    }
+  
+    if (content[0] === "/") { // is a command
+      let command;
+      const indexOfSpace = content.slice(1).indexOf(" ");
+      const args = content.slice(indexOfSpace + 1).split(" ");
+      if (indexOfSpace === -1) {
+        command = content.slice(1);
+      }
+      else {
+        command = content.slice(1, indexOfSpace);
+      }
+
+      let shouldReturn = true;
+      switch (command) {
+        case "clear":
+        case "cls":
+          setMessages([]);
+          break;
+        case "nick":
+          changeName(args[0]);
+        default:
+          shouldReturn = false; 
+      }
+      if (shouldReturn) {
+        return // prevent emitting message
+      }
+    }
+    socket.emit("message", {
+      content: content,
+      id: id
+    });
+  }
+
   function sendMessage(e) {
     const content = inputRef.current.value.trim();
     inputRef.current.value = "";
@@ -120,16 +161,12 @@ function App() {
     });
 
     socket.on('userJoin', (data) => {
+      // extract before and after {{name}} from data.joinMessage 
       const [left, right] = data.joinMessage.split('{{name}}');
-      
-      const content = left + data.who + right;
 
-      const messageData = {
-        name: data.name,
-        color: data.color,
-        timestamp: data.timestamp,
-        content: content,
-      }
+      // create new object with actual content
+      const messageData = {content: left + data.who + right, ...data};
+      delete messageData.who; // remove unnecessary key
 
       setMessages(arr => [...arr, messageData]);
     });
@@ -144,7 +181,6 @@ function App() {
 
     socket.on('onlineUsers', (onlineUsers) => {
       setOnlineUsers(onlineUsers);
-      console.log(onlineUsers);
     });
     
   }, []);
@@ -177,6 +213,7 @@ function App() {
                   color={data.color} 
                   content={data.content}
                   socketid={data.socketId}
+                  isservermessage={data.isServerMessage || false}
                   />
               ))}
             </div>
