@@ -6,9 +6,13 @@ const Message = (props) => {
         <span className="message__timestamp">{props.timestamp}</span>
       </p>
       <p className="message__content">{props.content}</p>
+      
+      {!props.isservermessage && 
       <div className="message__menu">
-      {!props.isservermessage && <button></button>}
+        <button className="message_button">PM</button>
       </div>
+      }
+      
     </div>
   )
 }

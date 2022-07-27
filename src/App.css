@@ -71,7 +71,18 @@ textarea::-webkit-scrollbar {
   background-color: var(--message-bg-color-hover);
 ;}
 
-.input {
+.message__menu {
+  background-color: #b9b4e0;
+  display: inline-block;
+  text-align: left;
+}
+/* 
+.message__button {
+
+}
+*/
+
+.input {  
   border: 1px solid #fa0;
   border-radius: 1px;
 
