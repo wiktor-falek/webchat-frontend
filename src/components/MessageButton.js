@@ -4,8 +4,7 @@ const privateMessage = (targetId) => {
         return;
     };
     let textarea = document.querySelector("textarea");
-    let previousValue = textarea.value;
-    textarea.value = `@${targetId} ${previousValue}`
+    textarea.value = `@${targetId} ${textarea.value}`;
 }
 
 const MessageButton = (props) => {
