@@ -1,3 +1,5 @@
+import MessageButton from "./MessageButton";
+
 const Message = (props) => {
   return (
     <div className="message">
@@ -9,7 +11,7 @@ const Message = (props) => {
       
       {!props.isservermessage && 
       <div className="message__menu">
-        <button className="message_button">PM</button>
+        {props.socketid && <MessageButton socketid={props.socketid}/>}
       </div>
       }
       

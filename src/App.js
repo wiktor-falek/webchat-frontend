@@ -59,21 +59,11 @@ function App() {
           return;
       }
     }
-    console.log(content);
-    console.log(content[21]);
-    if (
-        //if after @ there is 20 characters(socketId) 
-        content[0] === "@" &&
-        content.slice(1, 21).length === 20
-        //content[21] === " "
-        //content.slice(indexOfSpace + 2
-        ) {
 
-      console.table({
-        content: content,
-        argsNotSplit: argsNotSplit,
-        command: command
-      });
+    if ( // message starts with @ and after that there are 20 non space characters
+        content[0] === "@" &&
+        Array.from(content.slice(1, 21)).filter((c) => c != " ").length === 20
+        ) {
 
       let message = "";
       if (argsNotSplit !== command) {
@@ -121,7 +111,6 @@ function App() {
 
   function forceScrollMessagesToBottom(e) {
     const el = messagesRef.current;
-    //el.scrollTop = el.scrollHeight;
     el.scroll({ top: el.scrollHeight, behavior: "smooth"})
   }
 
